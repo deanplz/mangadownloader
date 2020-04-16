@@ -1,4 +1,3 @@
-import Dependencies._
 
 lazy val root = (project in file(".")).
   settings(
@@ -8,5 +7,8 @@ lazy val root = (project in file(".")).
       version      := "0.1.0-SNAPSHOT"
     )),
     name := "mangaDownloader",
-    libraryDependencies += scalaTest % Test
+    libraryDependencies ++= Seq(
+      "org.jsoup" % "jsoup" % "1.9.1",
+      "org.scalatest" %% "scalatest" % "3.0.5"
+    )
   )

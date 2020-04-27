@@ -9,6 +9,9 @@ lazy val root = (project in file(".")).
     name := "mangaDownloader",
     libraryDependencies ++= Seq(
       "org.jsoup" % "jsoup" % "1.9.1",
-      "org.scalatest" %% "scalatest" % "3.0.5"
+      "org.scalatest" %% "scalatest" % "3.1.0",
+      "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2",
+      "org.mockito" % "mockito-scala_2.12" % "1.11.1",
+      "org.mockito" % "mockito-scala-scalatest_2.12" % "1.11.1"
     )
   )

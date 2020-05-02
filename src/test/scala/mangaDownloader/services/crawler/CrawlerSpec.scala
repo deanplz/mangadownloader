@@ -48,13 +48,13 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 </div>
         """
 
-      //assert(crawler.crawlToChapterTotal(testHtml) === 3)
+      //assert(crawler.crawlToChapterTotal(testHtml) shouldBe 3)
     }
 
     "fail when there are no chapters in the html" in {
       val testHtml =
         "asd"
-      //assert(crawler.crawlToChapterTotal(testHtml) === "no chapters in the html")
+      //assert(crawler.crawlToChapterTotal(testHtml) shouldBe "no chapters in the html")
     }
   }
 
@@ -66,7 +66,7 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
             <div id="imgholder"><a href="/one-piece/1/3"><img id="img" width="800" height="1297" src="https://i5.imggur.net/one-piece/1/one-piece-1668161.jpg" alt="One Piece 1 - Page 2" /></a> </div>
         </td>
         """
-      //assert(crawler.crawlToImageSource(testHtml) === "https://i5.imggur.net/one-piece/1/one-piece-1668161.jpg")
+      //assert(crawler.crawlToImageSource(testHtml) shouldBe "https://i5.imggur.net/one-piece/1/one-piece-1668161.jpg")
     }
 
     "fail when there are no sources for the images from the html" in {
@@ -76,7 +76,7 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
             document.write('<scr'+'ipt async id="BB_SLOT_'+BB_r+'_'+BB_ind+'" src="//st.bebi.com/bebi_'+BB_vrsa+'.js"></scr'+'ipt>');
         </script>
         """
-      //assert(crawler.crawlToImageSource(testHtml) === "no source for images")
+      //assert(crawler.crawlToImageSource(testHtml) shouldBe "no source for images")
     }
   }
 }

@@ -3,7 +3,8 @@ package mangaDownloader.services.downloader.crawler
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.mockito.MockitoSugar
-
+import Crawler.CrawlerError
+import Crawler.CrawlerSuccess
 class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   val crawler = new Crawler()
@@ -79,21 +80,36 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     "crawlToChapterTotal succeeds" should {
       "crawlToImageSource succeeds" should {
         "return a Success" in {
-
+          crawler.combine(3,List("asd.jpg","bsd.jpg")) shouldBe CrawlerSuccess (3,List("asd.jpg","bsd.jpg"))
         }
       }
+
       "crawlToImageSource fails" should {
-        "fail with no source for images" in {}
+        "fail with no source for images" in {
+crawler.combine(3, List("asd.jpg", "no source for images", "bsd.jpg")) shouldBe CrawlerError("no source for images")
+
+        }
       }
     }
     "crawlToChapterTotal fails" when {
       "crawlToImageSource succeeds" should {
-        "Fail with no chapters" in {}
+        "Fail with no chapters" in {
+          crawler.combine(
+            0,
+            List("asd.jpg","bsd.jpg")
+          ) shouldBe CrawlerError ("no chapters")
+        }
 
       }
       "crawlToImageSource fails" should {
-        "Fail with no chapters" in {}
+        "Fail with no chapters" in {
+         crawler.combine (0,List("asd.jpg", "no source for images", "bsd.jpg")) shouldBe CrawlerError ("no chapters")
+        }
       }
     }
   }
 }
+
+
+//first case result is zero
+//second case no source for images 

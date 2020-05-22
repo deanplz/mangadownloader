@@ -1,4 +1,4 @@
-package mangaDownloader.services.crawler
+package mangaDownloader.services.downloader.crawler
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -39,22 +39,17 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
             </td>
             <td>07/06/2009</td>
         </tr>
-        <tr>
-            <td>
-                <div class="chico_manga"></div>
-            </td>
-        </tr>
     </table>
 </div>
-        """
+        """.stripMargin
 
-      //assert(crawler.crawlToChapterTotal(testHtml) shouldBe 3)
+      crawler.crawlToChapterTotal(testHtml) shouldBe 3
     }
 
     "fail when there are no chapters in the html" in {
       val testHtml =
         "asd"
-      //assert(crawler.crawlToChapterTotal(testHtml) shouldBe "no chapters in the html")
+      crawler.crawlToChapterTotal(testHtml) shouldBe 0
     }
   }
 
@@ -66,7 +61,7 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
             <div id="imgholder"><a href="/one-piece/1/3"><img id="img" width="800" height="1297" src="https://i5.imggur.net/one-piece/1/one-piece-1668161.jpg" alt="One Piece 1 - Page 2" /></a> </div>
         </td>
         """
-      //assert(crawler.crawlToImageSource(testHtml) shouldBe "https://i5.imggur.net/one-piece/1/one-piece-1668161.jpg")
+      crawler.crawlToImageSource(testHtml) shouldBe "https://i5.imggur.net/one-piece/1/one-piece-1668161.jpg"
     }
 
     "fail when there are no sources for the images from the html" in {
@@ -76,7 +71,29 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
             document.write('<scr'+'ipt async id="BB_SLOT_'+BB_r+'_'+BB_ind+'" src="//st.bebi.com/bebi_'+BB_vrsa+'.js"></scr'+'ipt>');
         </script>
         """
-      //assert(crawler.crawlToImageSource(testHtml) shouldBe "no source for images")
+      crawler.crawlToImageSource(testHtml) shouldBe "no source for images"
+    }
+  }
+
+  "the combine function" when {
+    "crawlToChapterTotal succeeds" should {
+      "crawlToImageSource succeeds" should {
+        "return a Success" in {
+
+        }
+      }
+      "crawlToImageSource fails" should {
+        "fail with no source for images" in {}
+      }
+    }
+    "crawlToChapterTotal fails" when {
+      "crawlToImageSource succeeds" should {
+        "Fail with no chapters" in {}
+
+      }
+      "crawlToImageSource fails" should {
+        "Fail with no chapters" in {}
+      }
     }
   }
 }

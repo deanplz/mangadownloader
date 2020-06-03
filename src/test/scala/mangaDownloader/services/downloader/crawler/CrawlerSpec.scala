@@ -9,6 +9,21 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   val crawler = new Crawler()
 
+  "the crawler to total images for chapter" should {
+    "give us the number of pages in a chapter" in {
+      val testHtml = """
+        <div id="selectpage">
+          <select id="pageMenu" name="pageMenu">
+            <option value="/bleach/1">1</option>
+            <option value="/bleach/1/2" selected="selected">2</option>
+            <option value="/bleach/1/3">3</option>
+          </select> of 3</div>
+        </div>"""
+
+      crawler.crawlToTotalImagesForChapter(testHtml) shouldBe 3
+    }
+  }
+
   "the crawler crawlToChapterTotal" should {
     "give us the number of chapters from the html" in {
       val testHtml =
@@ -80,13 +95,22 @@ class CrawlerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     "crawlToChapterTotal succeeds" should {
       "crawlToImageSource succeeds" should {
         "return a Success" in {
-          crawler.combine(3,List("asd.jpg","bsd.jpg")) shouldBe CrawlerSuccess (3,List("asd.jpg","bsd.jpg"))
+          crawler.combine(3, List(
+            ("asd.jpg", 1, 0),
+            ("bsd.jpg", 2, 0)
+          )) shouldBe CrawlerSuccess (3, List(("asd.jpg", 1, 0),("bsd.jpg", 2, 0)))
         }
       }
 
       "crawlToImageSource fails" should {
         "fail with no source for images" in {
-crawler.combine(3, List("asd.jpg", "no source for images", "bsd.jpg")) shouldBe CrawlerError("no source for images")
+          crawler.combine(
+            3, List(
+              ("asd.jpg", 1, 0),
+              ("no source for images", 0, 0),
+              ("bsd.jpg", 2, 0)
+            )
+          ) shouldBe CrawlerError("no source for images")
 
         }
       }
@@ -96,14 +120,23 @@ crawler.combine(3, List("asd.jpg", "no source for images", "bsd.jpg")) shouldBe 
         "Fail with no chapters" in {
           crawler.combine(
             0,
-            List("asd.jpg","bsd.jpg")
+            List(
+              ("asd.jpg", 1, 0),
+              ("bsd.jpg", 2, 0)
+            )
           ) shouldBe CrawlerError ("no chapters")
         }
 
       }
       "crawlToImageSource fails" should {
         "Fail with no chapters" in {
-         crawler.combine (0,List("asd.jpg", "no source for images", "bsd.jpg")) shouldBe CrawlerError ("no chapters")
+         crawler.combine (0,
+           List(
+             ("asd.jpg", 1, 0),
+             ("no source for images", 0, 0),
+             ("bsd.jpg", 2, 0)
+           )
+         ) shouldBe CrawlerError ("no chapters")
         }
       }
     }

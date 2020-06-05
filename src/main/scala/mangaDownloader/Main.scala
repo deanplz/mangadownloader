@@ -1,8 +1,8 @@
 package mangaDownloader
 import mangaDownloader.services.cli.Cli
-import mangaDownloader.services.cli.Cli.CliSuccess
+import mangaDownloader.services.cli.Cli.{CliError, CliSuccess}
 import mangaDownloader.services.downloader.crawler.Crawler
-import mangaDownloader.services.downloader.crawler.Crawler.CrawlerSuccess
+import mangaDownloader.services.downloader.crawler.Crawler.{CrawlerError, CrawlerSuccess}
 import mangaDownloader.services.downloader.imageDownloader.ImageDownloader
 
 object Main {
@@ -12,8 +12,8 @@ object Main {
     cli.parseInput(args.toList) match {
       case Right(CliSuccess(a, b, c)) => {
         val crawler = new Crawler
-        crawler.images(a) match {
-          case CrawlerSuccess(totalChapters, imagesUrls) => {
+        crawler.images(a, b, c) match {
+          case CrawlerSuccess(_, imagesUrls) => {
             val id = new ImageDownloader
 
 
@@ -27,10 +27,12 @@ object Main {
 
 
           }
+          case CrawlerError(msg) => println(msg)
 
         }
 
       }
+      case Left(CliError(msg)) => println(msg)
     }
 
   }

@@ -14,7 +14,11 @@ class ImageDownloader {
       case s if s.startsWith("http") => s
       case s => throw new Exception(s"bad link $s")
     })
-    val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+    val connection = url
+      .openConnection()
+      .asInstanceOf[HttpURLConnection]
+
+    connection.setRequestProperty("User-Agent", "Mozilla/5.0")
     connection.setRequestMethod("GET")
     val in: InputStream = connection.getInputStream
     val chapterDirectory = new File(s"$directory/${mangaIdPage._1}/${mangaIdPage._2}").mkdirs()

@@ -36,27 +36,39 @@ class Crawler() {
     case (_, _) => CrawlerSuccess(totalChapters, imagesUrl)
   }
 
-  def images(mangaName: String) = {
+  def images(mangaName: String, chapterBoundary1: Int, chapterBoundary2: Int) = {
     val firstChapterHtml = Source.fromURL(s"http://www.mangareader.net/$mangaName").mkString
-    val totalChapters = 5//crawlToChapterTotal(firstChapterHtml)
-    println(s"the total chapters for manga $mangaName is $totalChapters")
-    val imagesUrls: List[(String, Int, Int)] = (1 to totalChapters).toList flatMap {
-      case chapter => {
+
+    def go2(from: Int, to: Int) = {
+      def go (chapter: Int) = {
         println(s"mangaName is $mangaName, current chapter is $chapter")
         val curr = Source.fromURL(s"http://www.mangareader.net/$mangaName/$chapter").getLines().mkString
+        println("took image, about to get total images for chapter")
         val totalImages = crawlToTotalImagesForChapter(curr)
+        println("got total images for chapter")
         1 to totalImages map {
           case currentImage => {
+            println("about to take image from link")
             val currImg = Source.fromURL(s"http://www.mangareader.net/$mangaName/$chapter/$currentImage").getLines().mkString
+            println("about to crawl to image source")
             (crawlToImageSource(currImg), chapter, currentImage)
-
           }
         }
-
-
       }
+      (from to to).toList flatMap { go(_) }
     }
-    combine(totalChapters, imagesUrls)
+
+    (chapterBoundary1, chapterBoundary2) match {
+      case (0, 0) => {
+        val totalChapters = crawlToChapterTotal(firstChapterHtml)
+        println(s"the total chapters for manga $mangaName is $totalChapters")
+        combine(totalChapters, go2(1, totalChapters))
+      }
+      case (x, 0) =>
+        combine(x, go2(1, x))
+      case (x, y) =>
+        combine(y-x, go2(x, y))
+    }
   }
 }
 
